@@ -53,6 +53,7 @@ export default function InsightsPage() {
 
   const generated = insights.length > 0;
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const financialData = useMemo(
     () => calcFinancialData(transactions, budgets),
@@ -61,6 +62,7 @@ export default function InsightsPage() {
 
   async function generateInsights() {
     setLoading(true);
+    setError(null);
     try {
       const result = await aiFactory.generateInsights(
         aiProvider,
@@ -73,6 +75,8 @@ export default function InsightsPage() {
         },
       );
       setInsights(result);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Unknown error");
     } finally {
       setLoading(false);
     }
@@ -151,6 +155,24 @@ export default function InsightsPage() {
           </div>
         ))}
       </div>
+
+      {/* ── Error banner ── */}
+      {error && (
+        <div
+          style={{
+            marginBottom: "1rem",
+            padding: "0.875rem 1rem",
+            borderRadius: "var(--radius)",
+            background: "var(--danger-subtle)",
+            border: "1px solid rgba(239,68,68,0.25)",
+            color: "var(--danger)",
+            fontSize: "0.875rem",
+            lineHeight: 1.5,
+          }}
+        >
+          <strong>Generation failed:</strong> {error}
+        </div>
+      )}
 
       {/* ── Insights content ── */}
       {loading ? (

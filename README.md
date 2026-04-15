@@ -45,6 +45,45 @@ Open [http://localhost:5173](http://localhost:5173). The app seeds demo data aut
    ```
 2. In Settings → AI Provider, select **Ollama** and set the base URL (`http://localhost:11434`) and model name.
 
+> **⚠️ Deployed app + Ollama (CORS)**
+>
+> Browsers block requests from a remote origin (e.g. a Vercel deployment) to `localhost`.
+> You have three options:
+>
+> **Option A — Run the app locally** (recommended for Ollama users)
+> ```bash
+> npm run dev   # then open http://localhost:5173
+> ```
+>
+> **Option B — Enable CORS on Ollama** before starting it:
+>
+> **Linux / macOS:**
+> ```bash
+> OLLAMA_ORIGINS=https://your-app.vercel.app ollama serve
+> ```
+>
+> **Windows (Command Prompt):**
+> ```cmd
+> set OLLAMA_ORIGINS=https://your-app.vercel.app
+> ollama serve
+> ```
+>
+> **Windows (PowerShell):**
+> ```powershell
+> $env:OLLAMA_ORIGINS="https://your-app.vercel.app"
+> ollama serve
+> ```
+>
+> **Windows (persistent — via System Environment Variables):**
+> 1. Open **Start** → search **"Environment Variables"** → click *Edit the system environment variables*
+> 2. Under *User variables*, click **New**
+> 3. Name: `OLLAMA_ORIGINS` — Value: `https://your-app.vercel.app`
+> 4. Click OK, then restart the Ollama app from the system tray
+>
+> Then update the Ollama Base URL in Settings to your machine's LAN IP or a tunnel URL (e.g. ngrok).
+>
+> **Option C — Switch to Groq** — cloud-based, no CORS issues, free tier available.
+
 ### Groq (cloud)
 
 1. Create a free API key at [console.groq.com](https://console.groq.com).

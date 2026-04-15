@@ -176,6 +176,35 @@ export default function SettingsPage() {
 
         {aiProvider === "ollama" && (
           <>
+            {/localhost|127\.0\.0\.1/.test(ollamaBaseUrl) &&
+              window.location.hostname !== "localhost" &&
+              window.location.hostname !== "127.0.0.1" && (
+                <div
+                  style={{
+                    margin: "0 1.25rem",
+                    padding: "0.75rem 1rem",
+                    borderRadius: "var(--radius-sm)",
+                    background: "var(--warning-subtle)",
+                    border: "1px solid rgba(234,179,8,0.25)",
+                    color: "var(--warning)",
+                    fontSize: "0.8125rem",
+                    lineHeight: 1.5,
+                  }}
+                >
+                  <strong>Ollama requires local access.</strong> Browsers block
+                  requests from a deployed site to{" "}
+                  <code>localhost</code>. Either{" "}
+                  <strong>run the app locally</strong> (<code>npm run dev</code>)
+                  or switch to <strong>Groq</strong> for cloud-based insights.
+                  <br />
+                  Alternatively, start Ollama with CORS enabled:
+                  <br />
+                  <code>
+                    OLLAMA_ORIGINS=https://smart-personal-finance-dashboard-peach.vercel.app
+                    ollama serve
+                  </code>
+                </div>
+              )}
             <div className="settings-row">
               <div>
                 <div className="settings-row__label">Ollama Base URL</div>

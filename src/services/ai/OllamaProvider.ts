@@ -145,19 +145,38 @@ export class OllamaProvider implements AIProvider {
     const today = new Date().toISOString().split("T")[0];
     const prompt = buildPrompt(data);
 
-    const response = await fetch(`${this.baseUrl}/api/generate`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        model: this.model,
-        prompt,
-        stream: false,
-        options: {
-          temperature: 0.3,
-          num_predict: 2048,
-        },
-      }),
-    });
+    let response: Response;
+    try {
+      response = await fetch(`${this.baseUrl}/api/generate`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model: this.model,
+          prompt,
+          stream: false,
+          options: {
+            temperature: 0.3,
+            num_predict: 2048,
+          },
+        }),
+      });
+    } catch (err) {
+      const isLocalhost = /localhost|127\.0\.0\.1/.test(this.baseUrl);
+      const isRemoteOrigin =
+        typeof window !== "undefined" &&
+        window.location.hostname !== "localhost" &&
+        window.location.hostname !== "127.0.0.1";
+
+      if (isLocalhost && isRemoteOrigin) {
+        throw new Error(
+          `Cannot reach Ollama from a deployed app — browsers block requests from "${window.location.origin}" to localhost. ` +
+            `Run the app locally (npm run dev) or start Ollama with: OLLAMA_ORIGINS=${window.location.origin} ollama serve`,
+        );
+      }
+      throw new Error(
+        `Could not connect to Ollama at ${this.baseUrl}. Make sure Ollama is running. (${String(err)})`,
+      );
+    }
 
     if (!response.ok) {
       const text = await response.text();
